@@ -4,6 +4,7 @@ import TodoForm from './TodoForm'
 import {DB_CONFIG} from "../firebase/config"
 import firebase from 'firebase/app'
 import 'firebase/database'
+import FooterBar from "./FooterBar";
 
 class Main extends React.Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Main extends React.Component {
         this.toggleAll = this.toggleAll.bind(this);
         this.clearCompleted = this.clearCompleted.bind(this);
         this.updateTodo = this.updateTodo.bind(this);
+        this.updateShow = this.updateShow.bind(this);
         this.updateFilter = this.updateFilter.bind(this)
         this.app = firebase.initializeApp(DB_CONFIG);
         this.database = this.app.database().ref().child('todos');
@@ -21,7 +23,7 @@ class Main extends React.Component {
         this.state = {
             todos: [],
             toggle: false,
-            showing: "all"
+            filter: "all"
         }
     }
 
@@ -46,11 +48,11 @@ class Main extends React.Component {
     }
 
     addTodo(taskName) {
-        const task = {
+        const temp = {
             title: taskName,
             isCompleted: false
         }
-        this.database.push(task);
+        this.database.push(temp);
 
     }
 
@@ -61,12 +63,12 @@ class Main extends React.Component {
 
     toggleTodo(todo) {
 
-        const task = {
+        const temp = {
             'id': todo.id,
             'title': todo.title,
             'isCompleted': !todo.isCompleted
         }
-        this.database.child(todo.id).update(task)
+        this.database.child(todo.id).update(temp)
     }
 
     toggleAll() {
@@ -94,15 +96,15 @@ class Main extends React.Component {
     }
 
     updateShow(str) {
-        this.setState({showing: str});
+        this.setState({filter: str});
     }
 
     updateFilter() {
         var temp = []
-        if (this.state.showing === "all") {
+        if (this.state.filter === "all") {
             return this.state.todos
         }
-        else if (this.state.showing === "active") {
+        else if (this.state.filter === "active") {
             this.state.todos.map((todo) => {
                 if (!todo.isCompleted) {
                     temp.push(todo)
@@ -110,7 +112,7 @@ class Main extends React.Component {
             })
             return temp;
         }
-        else if (this.state.showing === "completed") {
+        else if (this.state.filter === "completed") {
             this.state.todos.map((todo) => {
                 if (todo.isCompleted) {
                     temp.push(todo)
@@ -137,16 +139,22 @@ class Main extends React.Component {
                 completedCount++
             }
         })
-        let remainingCount = this.state.todos.length - completedCount
-        let totalCount = remainingCount+completedCount
+        let activeCount = this.state.todos.length - completedCount
+        let totalCount = this.state.todos.length
         // noinspection JSAnnotator
         return (
             <section className="todoform">
-                <TodoForm addTodo={this.addTodo}/>
+                <TodoForm
+                    addTodo={this.addTodo}
+                />
                 <section className="main">
                     {todos.length > 0 &&
-                    <input id="toggle-all" className="toggle-all" type="checkbox" checked={remainingCount===0}
-                           onChange={this.toggleAll}/>}
+                    <input id="toggle-all"
+                           className="toggle-all"
+                           type="checkbox"
+                           checked={activeCount === 0}
+                           onChange={this.toggleAll}
+                    />}
                     <label htmlFor="toggle-all"/>
                     <ul className="todo">
                         {
@@ -163,23 +171,12 @@ class Main extends React.Component {
                     </ul>
                 </section>
                 {totalCount > 0 &&
-                    <footer className="footer">
-                        {remainingCount > 0 && <span className="todo-count">
-                        <strong>{remainingCount}</strong> item{remainingCount > 1 && 's'} left</span>}
-                        <ul className="filters">
-                            <li value="all">
-                                <a href={"#/"} onClick={this.updateShow.bind(this, "all")}>All</a>
-                            </li>
-                            <li>
-                                <a href={"#/active"} onClick={this.updateShow.bind(this, "active")}>Active</a>
-                            </li>
-                            <li>
-                                <a href={"#/completed"} onClick={this.updateShow.bind(this, "completed")}>Completed</a>
-                            </li>
-                        </ul>
-                        {completedCount > 0 &&
-                        <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>}
-                    </footer>
+                <FooterBar
+                    activeCount={activeCount}
+                    updateShow={this.updateShow}
+                    completedCount={completedCount}
+                    clearCompleted={this.clearCompleted}
+                />
                 }
             </section>
         );
