@@ -1,0 +1,50 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/classnames": "^2.2.6",
+    "classnames": "^2.2.6",
+    "firebase": "^5.5.9",
+    "prop-types": "latest",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
+    "react-scripts": "2.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-transform-typescript": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.1",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.0",
+    "typescript": "^3.1.6",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-typescript"
+    ]
+  },
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ]
+}
